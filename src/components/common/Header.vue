@@ -4,13 +4,16 @@
     <ul>
       <li><router-link to="/door">首页</router-link></li>
       <li><router-link :to="newsPath" :class="{'active': currentUrl === '/news'}">新闻中心</router-link></li>
-      <li><router-link to='/patient' :class="{'active': currentUrl === '/patient'}">问诊</router-link></li>
+      <li><router-link to='/patient' :class="{'active': currentUrl === '/patient'}">病友服务</router-link></li>
       <li><router-link to='/doctor' :class="{'active': currentUrl === '/doctor'}">坐诊</router-link></li>
-      <li><router-link to='/count' :class="{'active': currentUrl === '/count'}">统计</router-link></li>
-      <li><router-link to='/medicine' :class="{'active': currentUrl === '/medicine'}">药库</router-link></li>
-      <li><router-link to='/money' :class="{'active': currentUrl === '/money'}">收费</router-link></li>
+      <li><router-link to='/medicine' :class="{'active': currentUrl === '/medicine'}">药物管理</router-link></li>
+      <li><router-link to='/money' :class="{'active': currentUrl === '/money'}">财务管理</router-link></li>
+      <li><router-link to='/statistics' :class="{'active': currentUrl === '/statistics'}">统计</router-link></li>
       <li><router-link to='/system' :class="{'active': currentUrl === '/system'}">系统设置</router-link></li>
-      <li class="user"><span @click="showPerson">{{loginName}}</span></li>
+      <li class="user">
+        <span @click="showPerson" v-if="loginName">{{loginName}}</span>
+        <span @click="$router.replace('/login')" v-else>登录 | 注册</span>
+      </li>
     </ul>
     <transition name="person-setting">
       <div class="person-setting" v-if="isShowPerson">
@@ -73,9 +76,9 @@ export default {
     const hisUser = getCookie('his_user')
     this.loginName = hisUser
     this.currentUrl = this.$route.path
-    if (hisUser === null) {
-      this.$router.replace('/login')
-    }
+    // if (hisUser === null) {
+    //   this.$router.replace('/login')
+    // }
   }
 }
 </script>

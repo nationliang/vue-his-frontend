@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/index'
+import { MessageBox } from 'element-ui'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,21 @@ const routes = [
     path: '/news',
     component: () => import('../pages/News.vue')
   }, {
+    path: '/patient',
+    component: () => import('../pages/Patient.vue')
+  }, {
+    path: '/doctor',
+    component: () => import('../pages/Doctor.vue')
+  }, {
+    path: '/medicine',
+    component: () => import('../pages/Medicine.vue')
+  }, {
+    path: '/statistics',
+    component: () => import('../pages/Statistics.vue')
+  }, {
+    path: '/money',
+    component: () => import('../pages/Money.vue')
+  }, {
     path: '/system',
     component: () => import('../pages/System.vue')
   }
@@ -44,6 +60,16 @@ router.beforeEach((to, from, next) => {
     store.commit('changeNewsArticleId', 0)
     store.commit('showArticle', false)
   }
+  // if (to.path === '/hospital' || to.path === '/department' || to.path === '/announcement' || to.path === '/party' || to.path === '/communicate' ) {
+  //   MessageBox({
+  //     title: '消息提醒',
+  //     message: '<h1 style=\'color: red; font-size: 20px;\'>该页面开发中......<h1>',
+  //     dangerouslyUseHTMLString: true
+  //   })
+  //   next(false)
+  // } else {
+  //   next()
+  // }
   next()
 })
 

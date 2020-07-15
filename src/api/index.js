@@ -53,10 +53,31 @@ export function getNews () {
   })
 }
 
-
 export function getRepresentNews () {
   return axios({
     method: 'post',
     url: `${process.env.VUE_APP_BASE_URL}/representNews`
+  })
+}
+
+export function sendDateMes (data) {
+  return axios({
+    method: 'post',
+    url: `${process.env.VUE_APP_BASE_URL}/date`,
+    data
+  })
+}
+
+export function getDateMes (data) {
+  return axios({
+    method: 'post',
+    url: `${process.env.VUE_APP_BASE_URL}/showDateMes`
+  })
+}
+
+export function getDateRecords () {
+  return axios({
+    method: 'post',
+    url: `${process.env.VUE_APP_BASE_URL}/getDateRecords`
   })
 }

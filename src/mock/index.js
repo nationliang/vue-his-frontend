@@ -7,7 +7,10 @@ import {
   handleSex,
   handleChangeUser,
   handleNews,
-  handleRepresentNews
+  handleRepresentNews,
+  handleDateMes,
+  handleDate,
+  handleDateRecords
 } from "../config/utils.js"
 
 Mock.mock(/\/signedin/, "post", handleLogin)
@@ -18,3 +21,6 @@ Mock.mock(/\/sex/, 'get', handleSex)
 Mock.mock(/\/changeuser/, 'post', handleChangeUser)
 Mock.mock(/\/news/, 'post', handleNews)
 Mock.mock(/\/representNews/, 'post', handleRepresentNews)
+Mock.mock(/\/date/, 'post', handleDateMes)
+Mock.mock(/\/showDateMes/, 'post', handleDate)
+Mock.mock(/\/getDateRecords/, 'post', handleDateRecords)

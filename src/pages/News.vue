@@ -89,7 +89,11 @@ export default {
         const num = this.currentPage - 1
         const newsShow = []
         for (let i = 0; i < 10; i++) {
-          newsShow.push(newsItems[num + i])
+          if (newsItems.length < num * 10 + i + 1) {
+            break
+          } else {
+            newsShow.push(newsItems[num * 10 + i])
+          }
         }
         return newsShow
       } else {

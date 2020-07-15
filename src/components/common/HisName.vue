@@ -1,6 +1,6 @@
 <template>
   <div class="name-wraper">
-    <img :src="require('../../assets/images/redten.png')" class="redten" /><span class="name">医院信息管理系统</span>
+    <img :src="require('../../assets/images/redten.png')" class="redten" /><span class="name">还治不了你了医院</span>
   </div>
 </template>
 <script>

@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <div style="margin: 50px auto;width:350px;">
-      <img :src="require('../assets/images/redten.png')" style="width: 80px;height: 70px;vertical-align: middle;"><span style="color: #06F;font-size: 30px;vertical-align: middle;">医院信息管理系统</span>
+      <img :src="require('../assets/images/redten.png')" style="width: 80px;height: 70px;vertical-align: middle;"><span style="color: #06F;font-size: 30px;vertical-align: middle;">还治不了你了医院</span>
     </div>
     <div class="login-wrapper">
       <div v-if="!resetPwd" class="login-title-wrapper">
@@ -13,7 +13,7 @@
       </div>
       <div v-if="login && !resetPwd" class="login">
         <div>
-          <input placeholder="用户名" type="text" id="login-name" v-model="loginUser" ref="loginUser" :class="{'warningStyle': luwarning || fbmes11}">
+          <input maxlength="10" title="最大字符数为10" placeholder="用户名" type="text" id="login-name" v-model="loginUser" ref="loginUser" :class="{'warningStyle': luwarning || fbmes11}">
         </div>
         <div class="warningWord" v-if="luwarning">用户名为必填项</div>
         <div class="warningWord">{{fbmes11}}</div>
@@ -37,7 +37,7 @@
       </div>
       <div v-if="!login && !resetPwd" class="login">
         <div>
-          <input placeholder="用户名" type="text" id="register-name" v-model="registerUser" ref="registerUser" :class="{'warningStyle': ruwarning}">
+          <input maxlength="10" title="最大字符数为10" placeholder="用户名" type="text" id="register-name" v-model="registerUser" ref="registerUser" :class="{'warningStyle': ruwarning}">
         </div>
         <div class="warningWord" v-if="ruwarning">用户名为必填项</div>
         <div class="warningWord">{{runhae}}</div>
@@ -78,7 +78,7 @@
       </div>
       <div v-if="resetPwd" class="login">
         <div>
-          <input placeholder="用户名" type="text" v-model="resetUser" :class="{'warningStyle': reuwarning}">
+          <input maxlength="10" title="最大字符数为10" placeholder="用户名" type="text" v-model="resetUser" :class="{'warningStyle': reuwarning}">
         </div>
         <div class="warningWord" v-if="reuwarning">用户名为必填项</div>
         <div class="warningWord">{{fbmes31}}</div>

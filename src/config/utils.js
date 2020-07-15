@@ -2335,37 +2335,7 @@ export function handleNews (data) {
               '周智广院长表示，在国家“过紧日子”的要求下，医院要树立“过好紧日子”的意识。他强调，医院采取强有力的调控方式，努力盘活医学装备使用效益；各临床科室要更加规范论证医学装备需求。各职能部门要积极争取上级财政支持，加大抗疫投入，添置有关医学装备，持续加强核酸检测能力，同步抓好疫情防控和恢复生产工作。'
             ]
           }, {
-            title: '急诊医学科党支部召开党员大会',
-            source: '医学装备部',
-            date: '2020-06-28',
-            author: '彭雄俊',
-            editor: '赵晓华',
-            content: [
-              '会议首先听取了医学装备部有关全院医学装备2019年总结和2020年计划的汇报。2019年，医院采购了各科室基本医学装备，并添置了最先进的手术机器人、核磁共振和CT。2020年，按照国家“过紧日子”的精神，医院编制了常规医学装备配置计划，提出共享医学装备试点思路。',
-              '周智广院长表示，在国家“过紧日子”的要求下，医院要树立“过好紧日子”的意识。他强调，医院采取强有力的调控方式，努力盘活医学装备使用效益；各临床科室要更加规范论证医学装备需求。各职能部门要积极争取上级财政支持，加大抗疫投入，添置有关医学装备，持续加强核酸检测能力，同步抓好疫情防控和恢复生产工作。'
-            ]
-          }, {
-            title: '急诊医学科党支部召开党员大会',
-            source: '医学装备部',
-            date: '2020-06-28',
-            author: '彭雄俊',
-            editor: '赵晓华',
-            content: [
-              '会议首先听取了医学装备部有关全院医学装备2019年总结和2020年计划的汇报。2019年，医院采购了各科室基本医学装备，并添置了最先进的手术机器人、核磁共振和CT。2020年，按照国家“过紧日子”的精神，医院编制了常规医学装备配置计划，提出共享医学装备试点思路。',
-              '周智广院长表示，在国家“过紧日子”的要求下，医院要树立“过好紧日子”的意识。他强调，医院采取强有力的调控方式，努力盘活医学装备使用效益；各临床科室要更加规范论证医学装备需求。各职能部门要积极争取上级财政支持，加大抗疫投入，添置有关医学装备，持续加强核酸检测能力，同步抓好疫情防控和恢复生产工作。'
-            ]
-          }, {
-            title: '急诊医学科党支部召开党员大会',
-            source: '医学装备部',
-            date: '2020-06-28',
-            author: '彭雄俊',
-            editor: '赵晓华',
-            content: [
-              '会议首先听取了医学装备部有关全院医学装备2019年总结和2020年计划的汇报。2019年，医院采购了各科室基本医学装备，并添置了最先进的手术机器人、核磁共振和CT。2020年，按照国家“过紧日子”的精神，医院编制了常规医学装备配置计划，提出共享医学装备试点思路。',
-              '周智广院长表示，在国家“过紧日子”的要求下，医院要树立“过好紧日子”的意识。他强调，医院采取强有力的调控方式，努力盘活医学装备使用效益；各临床科室要更加规范论证医学装备需求。各职能部门要积极争取上级财政支持，加大抗疫投入，添置有关医学装备，持续加强核酸检测能力，同步抓好疫情防控和恢复生产工作。'
-            ]
-          }, {
-            title: '急诊医学科党支部召开党员大会',
+            title: '急诊医学科党支部召开党员大会(最后一条)',
             source: '医学装备部',
             date: '2020-06-28',
             author: '彭雄俊',
@@ -2420,15 +2390,15 @@ export function handleRepresentNews () {
       articleTitleArr: [
         {
           title: '湘雅二医院召开医学装备管理委员会会议',
-          date: '2020 年 06 月 28 日'
+          date: '2020-06-28'
         },
         {
           title: '急诊医学科党支部召开党员大会',
-          date: '2020 年 06 月 28 日'
+          date: '2020-06-28'
         },
         {
           title: '急诊医学科党支部召开党员大会',
-          date: '2020 年 06 月 28 日'
+          date: '2020-06-28'
         }        
       ]
     },
@@ -2437,7 +2407,7 @@ export function handleRepresentNews () {
       articleTitleArr: [
         {
           title: '血液净化中心第五期空中课堂开播',
-          date: '2020 年 06 月 28 日'
+          date: '2020-06-28'
         }
       ]
     },
@@ -2446,4 +2416,328 @@ export function handleRepresentNews () {
       articleTitleArr: []
     }
   ]
+}
+
+export function handleDateMes (data) {
+  return { status: 1 }
+}
+
+export function handleDate (data) {
+  return {
+    dateItem: [
+      {
+        date: '2020-07-05',
+        time: '下午',
+        department: '肿瘤科',
+        doctor: '孙淼',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-05',
+        time: '上午',
+        department: '儿科',
+        doctor: '钱程',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-04',
+        time: '上午',
+        department: '传染科',
+        doctor: '周克',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-06',
+        time: '上午',
+        department: '中医科',
+        doctor: '钟高',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-04',
+        time: '上午',
+        department: '男科',
+        doctor: '魏高',
+        kind: '普通号',
+        fee: '10'
+      },        {
+        date: '2020-07-06',
+        time: '下午',
+        department: '外科',
+        doctor: '赵平',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-04',
+        time: '上午',
+        department: '五官科',
+        doctor: '柳叶',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-06',
+        time: '上午',
+        department: '牙科',
+        doctor: '高莉',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-04',
+        time: '上午',
+        department: '妇科',
+        doctor: '洪爱红',
+        kind: '普通号',
+        fee: '10'
+      },
+      {
+        date: '2020-07-05',
+        time: '下午',
+        department: '外科',
+        doctor: '刘杰',
+        kind: '普通号',
+        fee: '10'
+      }
+    ],
+    dateArr:[
+      {
+        text:'2020-07-04',value: '2020-07-04'
+      }, {
+        text: '2020-07-05', value: '2020-07-05'
+      }
+    ],
+    timeArr: [
+      {
+        text: '下午',
+        value: '下午'
+      },
+      {
+        text: '上午',
+        value: '上午'
+      }
+    ],
+    depArr: [
+      {
+        text: '肿瘤科',
+        value: '肿瘤科'
+      },
+      {
+        text: '儿科',
+        value: '儿科'
+      },
+      {
+        text: '传染科',
+        value: '传染科'
+      },
+      {
+        text: '中医科',
+        value: '中医科'
+      },
+      {
+        text: '男科',
+        value: '男科'
+      },
+      {
+        text: '外科',
+        value: '外科'
+      },
+      {
+        text: '五官科',
+        value: '五官科'
+      },
+      {
+        text: '牙科',
+        value: '牙科'
+      },
+      {
+        text: '妇科',
+        value: '妇科'
+      },
+      {
+        text: '外科',
+        value: '外科'
+      }
+    ],
+    doctorArr: [
+      {
+        text: '孙淼',
+        value: '孙淼'
+      },
+      {
+        text: '钱程',
+        value: '钱程'
+      },
+      {
+        text: '周克',
+        value: '周克'
+      },
+      {
+        text: '钟高',
+        value: '钟高'
+      },
+      {
+        text: '魏高',
+        value: '魏高'
+      },
+      {
+        text: '赵平',
+        value: '赵平'
+      },
+      {
+        text: '柳叶',
+        value: '柳叶'
+      },
+      {
+        text: '高莉',
+        value: '高莉'
+      },
+      {
+        text: '刘杰',
+        value: '刘杰'
+      },
+      {
+        text: '洪爱红',
+        value: '洪爱红'
+      }
+    ],
+    kindArr: [
+      {
+        text: '普通号',
+        value: '普通号'
+      },
+      {
+        text: '专家号',
+        value: '专家号'
+      }
+    ],
+  }
+}
+
+export function handleDateRecords () {
+  return {
+    dateRecords: [
+      {
+        name: 'admin',
+        doctor: '钟高',
+        dep: '中医科',
+        kind: '普通号',
+        counter: '胡适',
+        pill: '季高',
+        fee: 183,
+        date: '2020-07-05',
+        time: '上午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '高莉',
+        dep: '牙科',
+        kind: '普通号',
+        counter: '胡适',
+        pill: '季高',
+        fee: 153,
+        date: '2020-07-05',
+        time: '下午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '孙淼',
+        dep: '肿瘤科',
+        kind: '普通号',
+        counter: '胡适',
+        pill: '季高',
+        fee: 127,
+        date: '2020-07-04',
+        time: '上午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '高莉',
+        dep: '牙科',
+        kind: '普通号',
+        counter: '王凯',
+        pill: '胡凯',
+        fee: 113,
+        date: '2020-07-05',
+        time: '下午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '高莉',
+        dep: '牙科',
+        kind: '普通号',
+        counter: '胡适',
+        pill: '季高',
+        fee: 128,
+        date: '2020-07-04',
+        time: '上午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '洪爱红',
+        dep: '妇科',
+        kind: '普通号',
+        counter: '王凯',
+        pill: '季高',
+        fee: 83,
+        date: '2020-07-05',
+        time: '上午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '赵平',
+        dep: '外科',
+        kind: '普通号',
+        counter: '胡适',
+        pill: '胡凯',
+        fee: 73,
+        date: '2020-07-05',
+        time: '下午',
+        state: '预约中'
+      },
+      {
+        name: 'admin',
+        doctor: '高莉',
+        dep: '牙科',
+        kind: '普通号',
+        counter: '胡适',
+        pill: '胡凯',
+        fee: 103,
+        date: '2020-07-04',
+        time: '上午',
+        state: '预约中'
+      }
+    ],
+    pillArr: [
+      {
+        text: '季高',
+        value: '季高'
+      },
+      {
+        text: '胡凯',
+        value: '胡凯'
+      },
+    ],
+    counterArr: [
+      {
+        text: '胡适',
+        value: '胡适'
+      },
+      {
+        text: '王凯',
+        value: '王凯'
+      }
+    ]
+  }
 }
