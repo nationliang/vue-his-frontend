@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/index'
 import { MessageBox } from 'element-ui'
+import { getCookie } from '../config/utils'
 
 Vue.use(VueRouter)
 
@@ -70,7 +71,57 @@ router.beforeEach((to, from, next) => {
   // } else {
   //   next()
   // }
-  next()
+  const power = getCookie('his_kind')
+  // const power = store.getters.getPower
+  // console.log(power)
+  if (to.path === '/patient' && (power !== 'pat' && power !== 'adm')) {
+    MessageBox({
+      title: '消息提醒',
+      // message: '<h1 style=\'color: red; font-size: 20px;\'>权限不足！<h1>',
+      // dangerouslyUseHTMLString: true
+      message: '权限不足！',
+      type: 'warning'
+    })
+    next({ path: '/' })
+  } else if (to.path === '/doctor' && (power !== 'doc' && power !== 'adm')) {
+    MessageBox({
+      title: '消息提醒',
+      // message: '<h1 style=\'color: red; font-size: 20px;\'>权限不足！<h1>',
+      // dangerouslyUseHTMLString: true
+      message: '权限不足！',
+      type: 'warning'
+    })
+    next({ path: '/' })
+  } else if ((to.path === '/statistics' && power !== 'adm') || (to.path === '/system' && power !== 'adm')) {
+    MessageBox({
+      title: '消息提醒',
+      // message: '<h1 style=\'color: red; font-size: 20px;\'>权限不足！<h1>',
+      // dangerouslyUseHTMLString: true
+      message: '权限不足！',
+      type: 'warning'
+    })
+    next({ path: '/' })
+  } else if (to.path === '/medicine' && (power !== 'med' && power !== 'adm')) {
+    MessageBox({
+      title: '消息提醒',
+      // message: '<h1 style=\'color: red; font-size: 20px;\'>权限不足！<h1>',
+      // dangerouslyUseHTMLString: true
+      message: '权限不足！',
+      type: 'warning'
+    })
+    next({ path: '/' })
+  } else if (to.path === '/money' && (power !== 'cou' && power !== 'adm')) {
+    MessageBox({
+      title: '消息提醒',
+      // message: '<h1 style=\'color: red; font-size: 20px;\'>权限不足！<h1>',
+      // dangerouslyUseHTMLString: true
+      message: '权限不足！',
+      type: 'warning'
+    })
+    next({ path: '/' })
+  } else {
+    next()
+  }
 })
 
 export default router

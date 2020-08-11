@@ -30,19 +30,21 @@
           </div>
         </section>
         <div class="managePill" v-else>
-          <el-table :data="medicineList" max-height="420">
-            <el-table-column align="center" type="index" width="100" label="序号"></el-table-column>
-            <el-table-column align="center" prop="name" label="名称"></el-table-column>
-            <el-table-column align="center" prop="kind" label="类别"></el-table-column>
-            <el-table-column align="center" prop="price" label="单价"></el-table-column>
-            <el-table-column align="center" prop="rest" label="库存"></el-table-column>
-            <el-table-column align="center" prop="date" label="入库时间"></el-table-column>
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
-                <el-button size="mini" type="danger" @click="deleteMItem(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <div class="table-wrapper">
+            <el-table :data="medicineList" max-height="420">
+              <el-table-column align="center" type="index" width="100" label="序号"></el-table-column>
+              <el-table-column align="center" prop="name" label="名称"></el-table-column>
+              <el-table-column align="center" prop="kind" label="类别"></el-table-column>
+              <el-table-column align="center" prop="price" label="单价"></el-table-column>
+              <el-table-column align="center" prop="rest" label="库存"></el-table-column>
+              <el-table-column align="center" prop="date" label="入库时间"></el-table-column>
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="danger" @click="deleteMItem(scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
           <div class="addButton-wrapper">
             <el-button type="text" size="mini" @click="showMDialog">添加药品</el-button>
           </div>
@@ -67,7 +69,7 @@
           </td>
         </tr>
         <tr>
-          <td>药品数量：<input v-model="pillNum" type="text" class="dialog-input"></td>
+          <td>药品数量：<input v-model="amount" type="text" class="dialog-input"></td>
         </tr>
         <tr>
           <td>药品进价：<input v-model="pillCost" type="text" class="dialog-input"></td>
@@ -90,12 +92,21 @@ import PageHeader from '../components/common/Header'
 import PageSide from '../components/common/PageSide'
 import PageTail from '../components/common/Footer'
 import { MessageBox } from 'element-ui'
+import {
+  getMedicineList,
+  deleteMedicine,
+  addMedicine,
+  getPillList_med,
+  finishDistribution,
+  pillsDetail
+} from '../api/index'
+import { getDateStr } from '../config/utils'
 
 export default {
   data () {
     return {
       pillName: '',
-      pillNum: '',
+      amount: '',
       pillKind: 2,
       pillCost: '',
       pillPrice: '',
@@ -147,78 +158,7 @@ export default {
           date: '2020-07-10'
         }
       ],
-      medicineList: [
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        },
-        {
-          name: '黄连',
-          kind: '非处方药',
-          price: 25,
-          rest: 452,
-          date: '2020-07-10'
-        }
-      ],
+      medicineList: [],
       isShowMDialog: false
     }
   },
@@ -232,7 +172,7 @@ export default {
       let message = ''
       if (this.pillName === '') {
         message = '药品名不能为空'
-      } else if (this.pillNum === '') {
+      } else if (this.amount === '') {
         message = '药品数量不能为空'
       } else if (this.pillCost === '') {
         message = '进价不能为空'
@@ -248,43 +188,93 @@ export default {
           type: "warning"
         })
       } else {
-        this.showMDialog()
         const pillMes = {
           name: this.pillName,
           kind: this.pillKind,
-          num: this.pillNum,
+          amount: this.amount,
           des: this.pillDes,
           price: this.pillPrice,
-          cost: this.pillCost
+          cost: this.pillCost,
+          date: getDateStr()
         }
-        console.log(pillMes)
+        // console.log(pillMes)
+        addMedicine(pillMes).then(res => {
+          if (res.data.scode === 1) {
+            MessageBox({
+              title: '消息',
+              message: '添加成功！',
+              type: 'success'
+            })
+            this.showMDialog()
+            this.showMedicineList()
+          } else {
+            MessageBox({
+              title: '消息',
+              message: '待添加的药品名已存在！',
+              type: 'warning'
+            })
+          }
+        })
       }
     },
     showMDialog (event) {
       this.isShowMDialog = !this.isShowMDialog
-      // document.body.addEventListener('scroll', event => {
-      //   event.preventDefault()
-      //   event.stopPropagation()
-      //   return false
-      // })
     },
-    deleteMItem (row) {},
-    updateStatus (row) {
-      this.pillList = [
-        {
-          name: '黄连',
-          num: 5
-        },
-        {
-          name: '黄连',
-          num: 5
+    deleteMItem (row) {
+      deleteMedicine({ id: row.id }).then(res => {
+        if (res.data.scode === 1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: 'success'
+          })
+          this.showMedicineList()
         }
-      ]
+      })
     },
-    givePill (row) {},
+    updateStatus (row) {
+      // this.pillList = [
+      //   {
+      //     name: '黄连',
+      //     num: 5
+      //   },
+      //   {
+      //     name: '黄连',
+      //     num: 5
+      //   }
+      // ],
+      pillsDetail({ id: row.id }).then(res => {
+        this.pillList = res.data
+      })
+    },
+    givePill (row) {
+      finishDistribution({ id: row.id }).then(res => {
+        if (res.data.status === 1) {
+          MessageBox({
+            title: '消息',
+            message: '操作成功！',
+            type: 'success'
+          })
+          getPillList_med().then(res => {
+            this.patientList = res.data
+          })
+        }
+      })
+    },
     changeTopic (id) {
       this.defaultTopicId = id
+    },
+    showMedicineList () {
+      getMedicineList().then(res => {
+        this.medicineList = res.data
+      })
     }
+  },
+  mounted () {
+    this.showMedicineList()
+    getPillList_med().then(res => {
+      this.patientList = res.data
+    })
   }
 }
 </script>
@@ -313,6 +303,8 @@ export default {
           padding: 10px
       .managePill
         padding: 10px
+        .table-wrapper
+          min-height: 420px
         .addButton-wrapper
           text-align: right
           button

@@ -33,8 +33,8 @@
               </div>
               <el-table v-if="!isSelected" border max-height="395" :data="dateItem">
                 <el-table-column align="center" type="index"></el-table-column>
-                <el-table-column align="center" label="日期" prop="date"></el-table-column>
-                <el-table-column align="center" label="时间段" prop="time"></el-table-column>
+                <el-table-column align="center" :filters="filter_date" :filter-method="filterHandle" label="日期" prop="date"></el-table-column>
+                <el-table-column align="center" :filters="filter_time" :filter-method="filterHandle" label="时间段" prop="time"></el-table-column>
                 <el-table-column align="center" label="科室" prop="dep"></el-table-column>
                 <el-table-column align="center" label="医生" prop="doctor"></el-table-column>
                 <el-table-column align="center" label="类型" prop="kind"></el-table-column>
@@ -166,12 +166,23 @@ import PageHeader from '../components/common/Header'
 import PageSide from '../components/common/PageSide'
 import { MessageBox } from 'element-ui'
 import PageTail from '../components/common/Footer'
+import { getCookie, getDateStr } from '../config/utils'
+import {
+  getDateList,
+  getMedicineList_doc,
+  getCheckList_doc,
+  submitHealMes_doc,
+  getHistoryList_doc,
+  getDocId,
+  getDateMes
+} from '../api/index'
 
 export default {
   data () {
     return {
       defaultTopicId: 0,
       name: null,
+      doc_name: null,
       sex: null,
       old: null,
       idCard: null,
@@ -202,7 +213,7 @@ export default {
           price: 5,
           num: 0,
           amount: 0,
-          isSelected: false
+          isDeleted: false
         },
         {
           name: '牛蒡',
@@ -375,6 +386,24 @@ export default {
           doctor: '孙淼',
           phoneNum: '22512235544'
         }
+      ],
+      pat_id: null,
+      pat_name: null,
+      doc_id: null,
+      filter_date: [],
+      filter_time: [
+        {
+          text: '上午',
+          value: '上午'
+        },
+        {
+          text: '下午',
+          value: '下午'
+        },
+        {
+          text: '晚上',
+          value: '晚上'
+        }
       ]
     }
   },
@@ -418,6 +447,10 @@ export default {
     }
    },
   methods: {
+    filterHandle (value, row, column) {
+      const property = column['property']
+      return row[property] === value
+    },
     back () {
       this.name = ''
       this.sex = ''
@@ -432,6 +465,11 @@ export default {
       this.description = ''
       this.solution = ''
       this.isSelected = false
+
+      const name = getCookie('his_user')
+      getDateList({ name }).then(res => {
+        this.dateItem = res.data
+      })
     },
     submitHeal () {
       if (this.toggleStatus !== 'success') {
@@ -445,16 +483,25 @@ export default {
           symptom: this.symptom,
           description: this.description,
           solution: this.solution,
-          medicineList: this.selectCheckCopy,
-          checkList: this.selectCheckCopy
+          medicineList: this.selectPillsCopy,
+          checkList: this.selectCheckCopy,
+          pat_id: this.pat_id,
+          pat_name: this.pat_name,
+          date: getDateStr(),
+          doc_id: this.doc_id
         }
-        MessageBox({
-          title: '通知',
-          type: 'success',
-          message: '提交成功！'
+        // console.log(healSolution)
+        submitHealMes_doc(healSolution).then(res => {
+          if (res.data.status === 1) {
+            MessageBox({
+              title: '通知',
+              type: 'success',
+              message: '提交成功！'
+            })
+            this.back()
+            this.isSelected = false
+          }
         })
-        this.back()
-        this.isSelected = false
       }
     },
     showAddPillDialog (flag = 1) {
@@ -528,6 +575,7 @@ export default {
           return {...item}
         })
         this.selectPillsCopy = this.selectPillsCopy.concat(currentSelectPillsCopy)
+
         this.showAddPillDialog(1)
       } else {
         const currentSelectCheckCopy = this.selectCheck.map(item => {
@@ -540,11 +588,14 @@ export default {
     selectPatient (index) {
       const patient = this.dateItem[this.currentItemIndex].patientMes
       this.name = patient.name
+      this.pat_name = patient.name
       this.sex = patient.sex
       this.old = patient.old
       this.idCard = patient.idCard
       this.phoneNum = patient.phoneNum
       this.address = patient.address
+      this.pat_id = this.dateItem[this.currentItemIndex].id
+      // console.log(this.pat_id)
 
       this.currentItemIndex = index
       this.isSelected = true
@@ -554,63 +605,92 @@ export default {
     }
   },
   mounted () {
-    this.medicineList = this.pillList.map(item => {
-      return { ...item }
+    getDateMes().then(res => {
+      const data = res.data
+      this.filter_date = data.dateArr
     })
+    this.doc_name = getCookie('his_user')
+    getDateList({ name: this.doc_name }).then(res => {
+      this.dateItem = res.data
+    })
+    // const dateItem = [
+    //   {
+    //     date: '2020-07-04',
+    //     time: '上午',
+    //     doctor: '孙淼',
+    //     dep: '牙科',
+    //     kind: '普通号',
+    //     patient: 'admin',
+    //     patientMes: {
+    //       name: 'admin',
+    //       sex: '男',
+    //       old: 30,
+    //       idCard: '555555555555555555',
+    //       phoneNum: '55555555555',
+    //       address: '上海北京西路152号'
+    //     }
+    //   },
+    //   {
+    //     date: '2020-07-04',
+    //     time: '上午',
+    //     doctor: '钱程',
+    //     dep: '外科',
+    //     kind: '普通号',
+    //     patient: '王武',
+    //     patientMes: {
+    //       name: '王武',
+    //       sex: '男',
+    //       old: 30,
+    //       idCard: '555555555555555555',
+    //       phoneNum: '55555555555',
+    //       address: '上海北京南路152号'
+    //     }
+    //   },
+    //   {
+    //     date: '2020-07-04',
+    //     time: '上午',
+    //     doctor: '洪爱红',
+    //     dep: '皮肤科',
+    //     kind: '普通号',
+    //     patient: '刘鸥',
+    //     patientMes: {
+    //       name: '王武',
+    //       sex: '男',
+    //       old: 30,
+    //       idCard: '555555555555555555',
+    //       phoneNum: '55555555555',
+    //       address: '上海北京东路152号'
+    //     }
+    //   }
+    // ]
+    // this.dateItem = dateItem.slice()
+
+    getCheckList_doc().then(res => {
+      this.initialCheckData = res.data
+    })
+
     this.checkList = this.initialCheckData.map(item => {
       return { ...item }
     })
-    const dateItem = [
-      {
-        date: '2020-07-04',
-        time: '上午',
-        doctor: '孙淼',
-        dep: '牙科',
-        kind: '普通号',
-        patient: 'admin',
-        patientMes: {
-          name: 'admin',
-          sex: '男',
-          old: 30,
-          idCard: '555555555555555555',
-          phoneNum: '55555555555',
-          address: '上海北京西路152号'
-        }
-      },
-      {
-        date: '2020-07-04',
-        time: '上午',
-        doctor: '钱程',
-        dep: '外科',
-        kind: '普通号',
-        patient: '王武',
-        patientMes: {
-          name: '王武',
-          sex: '男',
-          old: 30,
-          idCard: '555555555555555555',
-          phoneNum: '55555555555',
-          address: '上海北京南路152号'
-        }
-      },
-      {
-        date: '2020-07-04',
-        time: '上午',
-        doctor: '洪爱红',
-        dep: '皮肤科',
-        kind: '普通号',
-        patient: '刘鸥',
-        patientMes: {
-          name: '王武',
-          sex: '男',
-          old: 30,
-          idCard: '555555555555555555',
-          phoneNum: '55555555555',
-          address: '上海北京东路152号'
-        }
-      }
-    ]
-    this.dateItem = dateItem.slice()
+
+    getMedicineList_doc().then(res => {
+      this.pillList = res.data.map(item => {
+        return { ...item }
+      })
+    })
+
+    // this.medicineList = this.pillList.map(item => {
+    //   return { ...item }
+    // })
+
+    getHistoryList_doc({ name: this.doc_name }).then(res => {
+      this.historyList = res.data
+    })
+
+    getDocId({ name: this.doc_name }).then(res => {
+      this.doc_id = res.data.doc_id
+      // console.log(this.doc_id)
+    })
   }
 }
 </script>

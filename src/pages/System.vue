@@ -21,6 +21,8 @@ import History from '../components/system/History'
 import NewsManage from '../components/system/NewsManage'
 import DManage from '../components/system/DManage'
 import PageTail from '../components/common/Footer'
+import Symptom from '../components/system/Symptom'
+import VisitHistory from '../components/system/VisitHistory'
 
 export default {
   data () {
@@ -49,6 +51,12 @@ export default {
           },
           {
             topic: '接诊记录管理'
+          },
+          {
+            topic: '症状库管理'
+          },
+          {
+            topic: '站点统计'
           }
         ]
       },
@@ -65,7 +73,9 @@ export default {
     History,
     NewsManage,
     DManage,
-    PageTail
+    PageTail,
+    Symptom,
+    VisitHistory
   },
   methods: {
     changeTopic (id) {
@@ -81,8 +91,12 @@ export default {
         this.myComponent = 'CheckItem'
       } else if (id === 5) {
         this.myComponent = 'NewsManage'
-      } else {
+      } else if (id === 6) {
         this.myComponent = 'History'
+      } else if (id === 7) {
+        this.myComponent = 'Symptom'
+      } else {
+        this.myComponent = 'VisitHistory'
       }
     }
   }

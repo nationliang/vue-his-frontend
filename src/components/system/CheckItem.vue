@@ -7,7 +7,7 @@
         <el-table-column align="center" label="售价" prop="price"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="delete(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteSystemCheck(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -32,53 +32,23 @@
 </template>
 <script>
 import { MessageBox } from 'element-ui'
+import { getCheckList, deleteCheck, addCheck } from '../../api/index'
+
 export default {
   data () {
     return {
-      checkSets: [
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        },
-        {
-          name: '钾鉴定',
-          price: 12
-        }
-      ],
+      checkSets: [],
       checkprice: '',
       checkname: '',
       isShowCheckDialog: false
     }
   },
   methods: {
+    showCheckList () {
+      getCheckList().then(res => {
+        this.checkSets = res.data
+      })
+    },
     addCheckMes () {
       let message = ''
       if (this.checkname === '') {
@@ -99,14 +69,44 @@ export default {
           name: this.checkname,
           price: this.checkprice
         }
-        console.log(checkMes)
-        this.showCheckDialog()
+        // console.log(checkMes)
+        addCheck(checkMes).then(res => {
+          if (res.data.scode === 1) {
+            MessageBox({
+              title: '消息',
+              message: '添加成功！',
+              type: 'success'
+            })
+            this.showCheckList()
+            this.showCheckDialog()
+          } else {
+            MessageBox({
+              title: '消息',
+              message: '待添加的检查项名已存在！',
+              type: 'warning'
+            })
+          }
+        })
       }
     },
     showCheckDialog () {
       this.isShowCheckDialog = !this.isShowCheckDialog
     },
-    delete (row) {}
+    deleteSystemCheck (row) {
+      deleteCheck({ id: row.id }).then(res => {
+        if (res.data.scode === 1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: 'success'
+          })
+          this.showCheckList()
+        }
+      })
+    }
+  },
+  mounted () {
+    this.showCheckList()
   }
 }
 </script>

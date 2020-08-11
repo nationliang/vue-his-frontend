@@ -21,7 +21,7 @@
               <el-input @change="checkAddress" type="textarea" resize="none" maxlength="175" show-word-limit v-model="address" placeholder="住址" class="input-adjast" rows="5"></el-input>
             </div>
             <div class="right">
-              <el-table height="395" header-row-class-name="label-style" :data="dateItem" highlight-current-row @current-change="currentRowChange">
+              <el-table height="395" :data="dateItem" highlight-current-row @current-change="currentRowChange">
                 <el-table-column align="center" type="index"></el-table-column>
                 <el-table-column :filters="dateArr" :filter-method="filterHandle" align="center" width="200" label="日期" prop="date"></el-table-column>
                 <el-table-column :filters="timeArr" :filter-method="filterHandle" align="center" label="时间段" prop="time"></el-table-column>
@@ -36,47 +36,49 @@
           <div class="record" v-if="defaultTopicId === 1">
             <el-tabs v-model="menuName" @tab-click="tabClick">
               <el-tab-pane label="已预约" name="1">
-                <el-table max-height="355" :data="dateRecords" border>
+                <el-table max-height="355" :data="datingRecords" border>
                   <el-table-column align="center" type="index"></el-table-column>
                   <el-table-column align="center" label="患者" prop="name"></el-table-column>
-                  <el-table-column :filters="doctorArr" :filter-method="filterHandle" align="center" label="医生" prop="doctor"></el-table-column>
-                  <el-table-column :filters="depArr" :filter-method="filterHandle" align="center" label="科室" prop="dep"></el-table-column>
+                  <el-table-column :filters="datingDocArr" :filter-method="filterHandle" align="center" label="医生" prop="doctor"></el-table-column>
+                  <el-table-column :filters="datingDepArr" :filter-method="filterHandle" align="center" label="科室" prop="dep"></el-table-column>
                   <el-table-column :filters="kindArr" :filter-method="filterHandle" align="center" label="类型" prop="kind"></el-table-column>
                   <el-table-column sortable align="center" label="费用" prop="fee"></el-table-column>
-                  <el-table-column :filters="dateArr" :filter-method="filterHandle" width="100px" align="center" label="日期" prop="date"></el-table-column>
+                  <el-table-column :filters="datingArr" :filter-method="filterHandle" width="100px" align="center" label="日期" prop="date"></el-table-column>
                   <el-table-column :filters="timeArr" :filter-method="filterHandle" align="center" label="时间段" prop="time"></el-table-column>
                   <el-table-column align="center" label="操作">
-                    <el-button type="danger" size="mini" @click="cancelDate">取消</el-button>
+                    <template slot-scope="scope">
+                      <el-button type="danger" size="mini" @click="cancelDate(scope.row)">取消</el-button>
+                    </template>
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
               <el-tab-pane label="待付款" name="2">
-                <el-table max-height="355" :data="dateRecords" border>
+                <el-table max-height="355" :data="payingRecords" border>
                   <el-table-column align="center" type="index"></el-table-column>
                   <el-table-column align="center" label="患者" prop="name"></el-table-column>
-                  <el-table-column :filters="doctorArr" :filter-method="filterHandle" align="center" label="医生" prop="doctor"></el-table-column>
-                  <el-table-column :filters="depArr" :filter-method="filterHandle" align="center" label="科室" prop="dep"></el-table-column>
+                  <el-table-column :filters="payingDocArr" :filter-method="filterHandle" align="center" label="医生" prop="doctor"></el-table-column>
+                  <el-table-column :filters="payingDepArr" :filter-method="filterHandle" align="center" label="科室" prop="dep"></el-table-column>
                   <el-table-column :filters="kindArr" :filter-method="filterHandle" align="center" label="类型" prop="kind"></el-table-column>
                   <el-table-column sortable align="center" label="费用" prop="fee"></el-table-column>
-                  <el-table-column :filters="dateArr" :filter-method="filterHandle" width="100px" align="center" label="日期" prop="date"></el-table-column>
+                  <el-table-column :filters="payingDate" :filter-method="filterHandle" width="100px" align="center" label="日期" prop="date"></el-table-column>
                   <el-table-column :filters="timeArr" :filter-method="filterHandle" align="center" label="时间段" prop="time"></el-table-column>
                 </el-table>
               </el-tab-pane>
               <el-tab-pane label="已完成" name="3">
-                <el-table max-height="355" :data="dateRecords" border>
+                <el-table max-height="355" :data="historyRecords" border>
                   <el-table-column align="center" type="index"></el-table-column>
                   <el-table-column align="center" label="患者" prop="name"></el-table-column>
-                  <el-table-column :filters="doctorArr" :filter-method="filterHandle" align="center" label="医生" prop="doctor"></el-table-column>
-                  <el-table-column :filters="depArr" :filter-method="filterHandle" align="center" label="科室" prop="dep"></el-table-column>
+                  <el-table-column :filters="historyDocArr" :filter-method="filterHandle" align="center" label="医生" prop="doctor"></el-table-column>
+                  <el-table-column :filters="historyDepArr" :filter-method="filterHandle" align="center" label="科室" prop="dep"></el-table-column>
                   <el-table-column :filters="kindArr" :filter-method="filterHandle" align="center" label="类型" prop="kind"></el-table-column>
-                  <el-table-column :filters="counterArr" :filter-method="filterHandle" align="center" label="收费员" prop="counter"></el-table-column>
-                  <el-table-column :filters="pillArr" :filter-method="filterHandle" align="center" label="派药员" prop="pill"></el-table-column>
+                  <el-table-column :filters="historyCounter" :filter-method="filterHandle" align="center" label="收费员" prop="counter"></el-table-column>
+                  <el-table-column :filters="historyPill" :filter-method="filterHandle" align="center" label="派药员" prop="pill"></el-table-column>
                   <el-table-column sortable align="center" label="费用" prop="fee"></el-table-column>
-                  <el-table-column :filters="dateArr" :filter-method="filterHandle" width="100px" align="center" label="日期" prop="date"></el-table-column>
+                  <el-table-column :filters="historyDate" :filter-method="filterHandle" width="100px" align="center" label="日期" prop="date"></el-table-column>
                   <el-table-column :filters="timeArr" :filter-method="filterHandle" align="center" label="时间段" prop="time"></el-table-column>
                   <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                      <el-button type="danger" size="mini" @click="deleteRecord(scope.$index)">删除</el-button>
+                      <el-button type="danger" size="mini" @click="deleteRecord(scope.row)">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -95,7 +97,16 @@ import PageSide from '../components/common/PageSide'
 import { MessageBox } from 'element-ui'
 import { getCookie } from '../config/utils'
 import { mapMutations } from 'vuex'
-import { sendDateMes, getDateMes, getDateRecords } from '../api/index'
+import {
+    sendDateMes,
+    getDateMes,
+    getDateRecords,
+    getDatingRecords,
+    getPayingRecords,
+    getHistoryRecords,
+    cancelDate,
+    deleteRecord
+  } from '../api/index'
 import PageTail from '../components/common/Footer'
 
 export default {
@@ -125,14 +136,46 @@ export default {
       },
       dateItem: [],
       dateArr:[],
-      timeArr: [],
+      timeArr: [
+        {
+          text: '上午',
+          value: '上午'
+        },
+        {
+          text: '下午',
+          value: '下午'
+        },
+        {
+          text: '晚上',
+          value: '晚上'
+        }
+      ],
       depArr: [],
       doctorArr: [],
-      kindArr: [],
+      kindArr: [
+        {
+          text: '普通门诊',
+          value: '普通门诊'
+        }
+      ],
       menuName: "1",
       dateRecords: [],
       pillArr: [],
-      counterArr: []
+      counterArr: [],
+      datingRecords: [],
+      datingDocArr: [],
+      datingDepArr: [],
+      datingArr: [],
+      payingRecords: [],
+      payingDocArr: [],
+      payingDepArr: [],
+      payingDate: [],
+      historyRecords: [],
+      historyDocArr: [],
+      historyDate: [],
+      historyDepArr: [],
+      historyPill: [],
+      historyCounter: []
     }
   },
   components:{
@@ -146,24 +189,37 @@ export default {
         const flag = newVal.name && newVal.sex && newVal.old && newVal.idCard && newVal.phoneNumber && newVal.address && newVal.date
         if (flag) {
           this.isShowSubmit = true
+        } else {
+          this.isShowSubmit = false
         }
       },
       deep: true
     }
   },
   methods: {
-    cancelDate () {
-      MessageBox({
-        title: '消息',
-        message: '开发中.......',
-        type: "warning"
+    cancelDate (row) {
+      // console.log(row)
+      cancelDate({ id: row.id }).then(res => {
+        if (res.data.status === 1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: "success"
+          })
+          this.initialDatingData()
+        }
       })
     },
-    deleteRecord (index) {
-      MessageBox({
-        title: '消息',
-        message: '开发中.......',
-        type: "warning"
+    deleteRecord (row) {
+      deleteRecord({ id: row.id }).then(res => {
+        if (res.data.status === 1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: "success"
+          })
+          this.initialHistoryData()
+        }
       })
     },
     tabClick (tab, event) {
@@ -184,7 +240,10 @@ export default {
           MessageBox({
             title: "消息提醒",
             message: '预约成功！',
-            type: 'success'
+            type: 'success',
+            callback (action, instance) {
+              location.reload()
+            }
           })
         }
       })
@@ -261,11 +320,34 @@ export default {
         time: newRow.time,
         department: newRow.department,
         doctor: newRow.doctor,
-        fee: newRow.fee
+        fee: newRow.fee,
+        kind: '普通号'
       }
     },
     changeTopic (id) {
       this.defaultTopicId = id
+    },
+    initialDatingData () {
+      const name = getCookie('his_user')
+      getDatingRecords({ name }).then(res => {
+        const data = res.data
+        this.datingRecords = data.dateRecords
+        this.datingDocArr = data.docArr
+        this.datingDepArr = data.depArr
+        this.datingArr = data.dateArr
+      })
+    },
+    initialHistoryData () {
+      const name = getCookie('his_user')
+      getHistoryRecords({ name }).then(res => {
+        const data = res.data
+        this.historyRecords = data.dateRecords
+        this.historyDocArr = data.docArr
+        this.historyDepArr = data.depArr
+        this.historyDate = data.dateArr
+        this.historyPill = data.pillArr
+        this.historyCounter = data.counterArr
+      })
     }
   },
   mounted () {
@@ -281,14 +363,17 @@ export default {
       this.timeArr = data.timeArr
       this.depArr = data.depArr
       this.doctorArr = data.doctorArr
-      this.kindArr = data.kindArr
     })
-    getDateRecords().then(res => {
+  
+    getPayingRecords({ name }).then(res => {
       const data = res.data
-      this.dateRecords = data.dateRecords
-      this.pillArr = data.pillArr
-      this.counterArr = data.counterArr
+      this.payingRecords = data.dateRecords
+      this.payingDocArr = data.docArr
+      this.payingDepArr = data.depArr
+      this.payingDate = data.dateArr
     })
+    this.initialHistoryData()
+    this.initialDatingData()
   }
 }
 </script>

@@ -27,8 +27,10 @@
         <div class="warningWord" v-if="lpwarning">密码为必填项</div>
         <div class="warningWord" v-if="pwns">密码不符合格式</div>
         <div class="warningWord">{{fbmes12}}</div>
-        <div class="item-container">
-          <input type="text" style="padding-right: 80px;" placeholder="验证码" v-model="cheCode" :class="{'warningStyle': ccode || lccinc}"><img :src="require('../assets/images/checkcode/'+lcimg+'.png')" style="position: absolute;top: 7px;right: 20px;cursor: pointer;" @click="refreshCimg">
+        <div class="item-container code-wrapper">
+          <input type="text" placeholder="验证码" v-model="cheCode" :class="{'warningStyle': ccode || lccinc}">
+          <!-- <img :src="lcImgSrc" style="position: absolute;top: 7px;right: 20px;cursor: pointer;" @click="refreshCimg(1)"> -->
+          <check-code class="check-code" :identifyCode="identifyCode" @changeCode="changeCode"></check-code>
         </div>
         <div class="warningWord" v-if="ccode">请填写验证码</div>
         <div class="warningWord">{{fbmes13}}</div>
@@ -58,21 +60,22 @@
         <div class="warningWord" v-if="rrpwarning">确认密码为必填项</div>
         <div class="warningWord" v-if="rrpnswarning">密码不符合格式</div>
         <div class="warningWord" style="margin-left: 0;" v-if="rpntswarning">密码与确认密码不一致</div>
-        <div class="item-container">
-          <input type="text" style="padding-right: 80px;" v-model="rchecode" placeholder="验证码" :class="{'warningStyle': rccode}"><img :src="require('../assets/images/checkcode/' + rcimg + '.png')" style="position: absolute;top: 7px;right: 20px;">
+        <div class="item-container code-wrapper">
+          <input type="text" v-model="rchecode" placeholder="验证码" :class="{'warningStyle': rccode}">
+          <!-- <img :src="require('../assets/images/checkcode/' + rcimg + '.png')" style="position: absolute;top: 7px;right: 20px;"> -->
+          <check-code class="check-code" :identifyCode="identifyCode" @changeCode="changeCode"></check-code>
         </div>
         <div class="warningWord" v-if="rccode">请填写验证码</div>
         <div class="warningWord">{{fbmes22}}</div>
         <div>
           <span class="sex">
             <label for="man">男&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="radio" name="sex" value="1" id="man" v-model="registerSex">
+            <input type="radio" name="sex" value="2" id="man" v-model="registerSex">
           </span>
           <span class="sex">
             <label for="woman">女&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="radio" name="sex" value="2" id="woman" v-model="registerSex">
+            <input type="radio" name="sex" value="1" id="woman" v-model="registerSex">
           </span>
-        <div class="warningWord" style="text-align: center;">{{fbmes22}}</div>
         </div>
         <button @click="checkRegisterMessege()">注册</button>
       </div>
@@ -99,8 +102,10 @@
         <div class="warningWord" v-if="rerpwarning">确认密码为必填项</div>
         <div class="warningWord" v-if="rerpnswarning">密码不符合格式</div>
         <div class="warningWord" style="margin-left: 0;" v-if="repntswarning">密码与确认密码不一致</div>
-        <div class="item-container">
-          <input type="text" style="padding-right: 80px;" v-model="resetCheCode" placeholder="验证码"><img :src="require('../assets/images/checkcode/'+ recimg +'.png')" style="position: absolute;top: 7px;right: 20px;" :class="{'warningStyle': reccode}">
+        <div class="item-container code-wrapper">
+          <input type="text" v-model="resetCheCode" placeholder="验证码">
+          <!-- <img :src="require('../assets/images/checkcode/'+ recimg +'.png')" style="position: absolute;top: 7px;right: 20px;" :class="{'warningStyle': reccode}"> -->
+          <check-code class="check-code" :identifyCode="identifyCode" @changeCode="changeCode"></check-code>
         </div>
         <div class="warningWord" v-if="reccode">请填写验证码</div>
         <div class="warningWord">{{fbmes32}}</div>
@@ -118,18 +123,20 @@ import {
   addUser,
   changeUser
 } from '../api/index'
-import { setCookie } from '../config/utils'
+import { setCookie, getDateStr } from '../config/utils'
+import CheckCode from '../components/common/CheckCode'
 
 export default {
   data() {
     return {
+      identifyCode: '' + Math.floor(Math.random() * 9000 + 1000),
       login: true,
       loginUser: "admin",
-      loginPwd: "123456",
+      loginPwd: "his2000",
       registerUser: "",
       registerPwd: "",
       registerRpwd: "",
-      registerSex: 1,
+      registerSex: 2,
       luwarning: false,
       lpwarning: false,
       ruwarning: false,
@@ -176,7 +183,19 @@ export default {
       fbmes32: ''
     }
   },
+  computed: {
+    lcImgSrc () {
+      return "require('../assets/images/checkcode/"+ this.lcimg + ".png')"
+    }
+  },
+  components: {
+    CheckCode
+  },
   methods: {
+    changeCode () {
+      const code = Math.floor(Math.random() * 9000 + 1000)
+      this.identifyCode = code + ''
+    },
     resetPassword () {
       let exp = /\w{6}/ //不要加g，否则第二次调用test会达不到预期
       if (this.resetUser === "") {
@@ -222,13 +241,14 @@ export default {
         this.rerpnswarning = false
         this.repntswarning = false
         this.reccode = false
-        if (JSON.parse(this.recimg) !== JSON.parse(this.resetCheCode)) {
+        if (JSON.parse(this.identifyCode) !== JSON.parse(this.resetCheCode)) {
           this.fbmes32 = '验证码不正确'
         } else {
           this.fbmes32 = ''
           changeUser({
             name: this.resetUser,
-            password: this.resetPwd
+            password: this.resetRrpwd,
+            date: getDateStr()
           }).then(res => {
             const data = res.data
             if (data.status === 1) {
@@ -293,14 +313,16 @@ export default {
         this.rpnswarning = false
         this.rrpwarning = false
         this.rpntswarning = false
-        if (JSON.parse(this.rcimg) !== JSON.parse(this.rchecode)) {
+        if (JSON.parse(this.identifyCode) !== JSON.parse(this.rchecode)) {
           this.fbmes22 = '验证码不正确'
-          this.refreshCimg(2)
         } else {
           this.fbmes22 = ''
           addUser({
             name: this.registerUser,
-            password: this.registerPwd
+            password: this.registerPwd,
+            sex: this.registerSex,
+            date: getDateStr(),
+            kind: 1
           }).then(res => {
             const data = res.data
             if (data.status === 1) {
@@ -334,31 +356,33 @@ export default {
         this.luwarning = false
         this.lpwarning = false
         this.pwns = false
-        signedIn({
-          name: this.loginUser,
-          password: this.loginPwd,
-          checkCode: this.cheCode
-        }).then(res => {
-          const data = res.data
-          const status = data.status
-          const mes = data.mes
-          if (status === 11) {
-            this.fbmes11 = mes
-          } else if (status === 12) {
-            this.fbmes11 = ''
-            this.fbmes12 = mes
-          } else {
-            this.fbmes12 = ''
-            if (parseInt(this.lcimg) !== parseInt(this.cheCode)) {
-              this.fbmes13 = '验证码不正确'
-              this.refreshCimg()
+        if (parseInt(this.identifyCode) !== parseInt(this.cheCode)) {
+          this.fbmes13 = '验证码不正确'
+          this.changeCode()
+        } else {
+          this.fbmes13 = ''
+          signedIn({
+            name: this.loginUser,
+            password: this.loginPwd,
+            checkCode: this.cheCode
+          }).then(res => {
+            const data = res.data
+            const status = data.status
+            const mes = data.mes
+            const kind = data.kind
+            if (status === 11) {
+              this.fbmes11 = mes
+            } else if (status === 12) {
+              this.fbmes11 = ''
+              this.fbmes12 = mes
             } else {
-              this.fbmes13 = ''
+              this.fbmes12 = ''
               setCookie('his_user', this.loginUser)
+              setCookie('his_kind', kind)
               this.$router.push('/door')
             }
-          }
-        })
+          })
+        }
       }
     },
     toggleWay(flag) {
@@ -447,6 +471,16 @@ export default {
         .item-container
           margin-top:8px
           position: relative
+          &.code-wrapper
+            padding-left: 19px
+            text-align: left
+            input[type=text]
+              width: 190px
+              padding-right: 5px
+          .check-code
+            position: absolute
+            top: 4px
+            right: 20px
         input[type=text], input[type=password]
           width: 88%
           box-sizing: border-box

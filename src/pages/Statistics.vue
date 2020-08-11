@@ -19,6 +19,11 @@ import PageHeader from '../components/common/Header'
 import PageSide from '../components/common/PageSide'
 import PageTail from '../components/common/Footer'
 import Chart from 'chart.js'
+import {
+  getIncomeAndExpenditure,
+  getMedicineList_sta,
+  getDoctorStatistics
+} from '../api/index'
 
 export default {
   data () {
@@ -37,7 +42,10 @@ export default {
             topic: '医生接诊'
           }
         ]
-      }
+      },
+      iande: [],
+      medicineList_sta: null,
+      dandp: null
     }
   },
   components:{
@@ -50,11 +58,13 @@ export default {
       const chart = new Chart(this.$refs.ctx3, {
         type: 'bar',
         data: {
-          labels: ["孙淼", "钱程", '洪爱红', '周乐', '李月', '王凯'],
+          // labels: ["孙淼", "钱程", '洪爱红', '周乐', '李月', '王凯'],
+          labels: this.dandp.doctorNameList,
           datasets: [
             {
               label: '统计信息',
-              data: [55, 64, 58, 46, 88, 47],
+              // data: [55, 64, 58, 46, 88, 47],
+              data: this.dandp.dataList,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -88,11 +98,13 @@ export default {
       const chart = new Chart(this.$refs.ctx2, {
         type: 'bar',
         data: {
-          labels: ["黄连", "人参", '雪莲', '砒霜', '鸦片'],
+          // labels: ["黄连", "人参", '雪莲', '砒霜', '鸦片'],
+          labels: this.medicineList_sta.nameList,
           datasets: [
             {
               label: '入库',
-              data: [55, 64, 58, 46, 88],
+              // data: [55, 64, 58, 46, 88],
+              data: this.medicineList_sta.inList,
               backgroundColor: [
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
@@ -110,7 +122,8 @@ export default {
             },
             {
               label: '出库',
-              data: [41, 12, 42, 11, 32],
+              // data: [41, 12, 42, 11, 32],
+              data: this.medicineList_sta.outList,
               backgroundColor: [
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
@@ -145,7 +158,7 @@ export default {
           labels: ["收入", "支出"],
           datasets: [
             {
-              data: [36, 64],
+              data: this.iande,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)'
@@ -179,7 +192,16 @@ export default {
     }
   },
   mounted () {
-    this.drawPieGraph()
+    getIncomeAndExpenditure().then(res => {
+      this.iande = res.data
+      this.drawPieGraph()
+    })
+    getMedicineList_sta().then(res => {
+      this.medicineList_sta = res.data
+    })
+    getDoctorStatistics().then(res => {
+      this.dandp = res.data
+    })
   }
 }
 </script>

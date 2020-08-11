@@ -4,12 +4,20 @@
       <el-table :data="userList" max-height="420">
         <el-table-column align="center" type="index" label="序号"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="sex" label="性别"></el-table-column>
-        <el-table-column align="center" prop="kind" label="类型"></el-table-column>
+        <el-table-column align="center" prop="sex" label="性别">
+          <template slot-scope="scope">
+            {{scope.row.sex === 'm'? '男' : '女'}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="kind" label="类型">
+          <template slot-scope="scope">
+            {{showKind(scope.row.kind)}}
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="date" label="创建时间"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="deleteUser(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteMember(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -37,14 +45,14 @@
       </div>
       <div class="item-wrapper" style="text-align: left;padding-left: 8px;">
         <span>用户性别：</span>
-        男：<input type="radio" value="m" v-model="usersex" name="sex" style="margin-right: 20px;">
-        女：<input type="radio" value="w" v-model="usersex" name="sex">
+        男：<input type="radio" value="2" v-model="usersex" name="sex" style="margin-right: 20px;">
+        女：<input type="radio" value="1" v-model="usersex" name="sex">
       </div>
       <div class="item-wrapper" style="text-align: left;padding-left: 8px;">
         <span>用户类型：</span>
-        管理员：<input type="radio" value="adm" name="userkind" v-model="userkind" style="margin-right:20px;">
-        收银员：<input type="radio" value="mny" name="userkind" v-model="userkind" style="margin-right:20px;">
-        药物管理员：<input value="padm" type="radio" name="userkind" v-model="userkind">
+        管理员：<input type="radio" value="3" name="userkind" v-model="userkind" style="margin-right:20px;">
+        收银员：<input type="radio" value="5" name="userkind" v-model="userkind" style="margin-right:20px;">
+        药物管理员：<input value="4" type="radio" name="userkind" v-model="userkind">
       </div>
       <div class="dialog-button-wrapper">
         <el-button type="primary" size="medium" @click="addUserMes">保存</el-button>
@@ -54,27 +62,35 @@
 </template>
 <script>
 import { MessageBox } from 'element-ui'
+import { getUserList, deleteUser, addSystemUser } from '../../api/index'
+import { getDateStr } from '../../config/utils'
 
 export default {
   data () {
     return {
-      userList: [
-        {
-          name: '李四',
-          sex: '男',
-          kind: '患者',// 1为管理员，2为患者，3医生，4为药品管理员，5为收银员
-          date: '2018-02-06'
-        }
-      ],
+      userList: [],
       username: '',
       userpass: '',
       usercpass: '',
-      usersex: 'm',
-      userkind: 'adm',
+      usersex: '2',
+      userkind: '3',
       isShowUserDialog: false
     }
   },
   methods: {
+    showKind (kind) {
+      if (kind === 'pat') {
+        return '患者'
+      } else if (kind === 'doc') {
+        return '医生'
+      } else if (kind === 'adm') {
+        return '管理员'
+      } else if (kind === 'med') {
+        return '药物管理员'
+      } else {
+        return '收银员'
+      }
+    },
     showUserDialog () {
       this.isShowUserDialog = !this.isShowUserDialog
     },
@@ -84,6 +100,8 @@ export default {
         message = '用户名不能为空'
       } else if (this.userpass === '') {
         message = '密码不能为空'
+      } else if (this.userpass.length < 6) {
+        message = '密码至少为6位'
       } else if (this.usercpass === '') {
         message = '确认密码不能为空'
       } else if (this.userpass !== this.usercpass) {
@@ -98,17 +116,57 @@ export default {
           type: 'warning'
         })
       } else {
+
         const userMes = {
           name: this.username,
           kind: this.userkind,
           sex: this.usersex,
-          password: this.userpass
+          password: this.userpass,
+          date: getDateStr()
         }
-        console.log(userMes)
+        // console.log(userMes)
+        addSystemUser(userMes).then(res => {
+          const data = res.data
+          if (data.scode === 1) {
+            MessageBox({
+              title: '消息',
+              message: '添加成功！',
+              type: 'success'
+            })
+            this.showUserList()
+          } else {
+            MessageBox({
+              title: '消息',
+              message: '待添加的用户名已存在！',
+              type: 'warning'
+            })
+          }
+        })
         this.showUserDialog()
       }
     },
-    deleteUser (row) {},
+    deleteMember (row) {
+      deleteUser({ id: row.id, name: row.name }).then(res => {
+        const data = res.data
+        if (data.scode === 1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: 'success'
+          })
+          this.showUserList()
+        }
+      })
+    },
+    showUserList () {
+      getUserList().then(res => {
+        const data = res.data
+        this.userList = data
+      })
+    }
+  },
+  mounted () {
+    this.showUserList()
   }
 }
 </script>

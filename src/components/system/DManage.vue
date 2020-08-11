@@ -4,12 +4,20 @@
       <el-table :data="doctorSets" max-height="420">
         <el-table-column align="center" label="序号" type="index"></el-table-column>
         <el-table-column align="center" label="姓名" prop="name"></el-table-column>
-        <el-table-column align="center" label="性别" prop="sex"></el-table-column>
+        <el-table-column align="center" label="性别" prop="sex">
+          <template slot-scope="scope">
+            {{scope.row.sex === 'm'? '男': '女'}}
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="科室" prop="dep"></el-table-column>
-        <el-table-column align="center" label="职称" prop="rank"></el-table-column>
+        <el-table-column align="center" label="职称" prop="rank">
+          <template slot-scope="scope">
+            {{showRank(scope.row.rank)}}
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="delete(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteSystemDoc(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -26,23 +34,25 @@
       <div class="item-wrapper">
         <span>医生性别：</span>
         <select v-model="docsex" class="dialog-input">
-          <option value="m" label="男"></option>
-          <option value="w" label="女"></option>
+          <option value="2" label="男"></option>
+          <option value="1" label="女"></option>
         </select>
       </div>
       <div class="item-wrapper">
         <span>医生科室：</span>
         <select v-model="docdep" class="dialog-input">
-          <option value="1" label="牙科"></option>
-          <option value="2" label="五官科"></option>
+          <!-- <option value="牙科">牙科</option>
+          <option value="五官科">五官科</option>
+          <option value="儿科">儿科</option> -->
+          <option :value="item.name" v-for="(item, index) in depList" :key="index">{{item.name}}</option>
         </select>
       </div>
       <div class="item-wrapper">
         <span>医生职称：</span>
         <select v-model="docrank" class="dialog-input">
-          <option value="1" label="主治医师"></option>
-          <option value="2" label="副主任医生"></option>
-          <option value="3" label="主任医生"></option>
+          <option value="1">主治医师</option>
+          <option value="2">副主任医生</option>
+          <option value="3">主任医生</option>
         </select>
       </div>
       <div class="dialog-button-wrapper">
@@ -53,73 +63,37 @@
 </template>
 <script>
 import { MessageBox } from 'element-ui'
+import { getDocList, deleteDoc, addDoc, getDep } from '../../api/index'
+import { getDateStr } from '../../config/utils'
+
 export default {
   data () {
     return {
-      doctorSets: [
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        },
-        {
-          name: '李明凯',
-          sex: '男',
-          dep: '牙科',
-          rank: '主治医师'
-        }
-      ],
+      doctorSets: [],
       isShowDocDialog: false,
       docname: '',
-      docsex: 'm',
-      docdep: '1',
-      docrank: '1'
+      docsex: '1',
+      docdep: '',
+      docrank: '1',
+      depList: []
     }
   },
   methods: {
+    showRank (rank) {
+      if (rank === 1) {
+        return '主治医师'
+      } else if (rank === 2) {
+        return '副主任医生'
+      } else {
+        return '主任医生'
+      }
+    },
+    showDoc () {
+      getDocList().then(res => {
+        const data = res.data
+        this.doctorSets = data
+      })
+    },
     addDoc () {
       let message = ''
       if (this.docname === '') {
@@ -138,16 +112,52 @@ export default {
           name: this.docname,
           sex: this.docsex,
           dep: this.docdep,
-          rank: this.docrank
+          rank: this.docrank,
+          date: getDateStr(),
+          password: 'his2000'
         }
-        console.log(docMes)
-        this.showDocDialog()
+        // console.log(docMes)
+        addDoc(docMes).then(res => {
+          if (res.data.scode === 1) {
+            MessageBox({
+              title: '消息',
+              message: '添加成功！',
+              type: 'success'
+            })
+            this.showDoc()
+            this.showDocDialog()
+          } else {
+            MessageBox({
+              title: '消息',
+              message: '待添加的医生名已存在！',
+              type: 'warning'
+            })
+          }
+        })
       }
     },
     showDocDialog () {
       this.isShowDocDialog = !this.isShowDocDialog 
     },
-    delete (row) {}
+    deleteSystemDoc (row) {
+      deleteDoc({ id: row.id, name: row.name }).then(res => {
+        if (res.data.scode === 1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: 'success'
+          })
+          this.showDoc()
+        }
+      })
+    }
+  },
+  mounted () {
+    getDep().then(res => {
+      this.docdep = res.data[0].name
+      this.depList = res.data
+    })
+    this.showDoc()
   }
 }
 </script>

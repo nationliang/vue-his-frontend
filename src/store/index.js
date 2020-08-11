@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     newsTopicId: 0,
     newsArticleId: 0,
-    isShowArticle: false
+    isShowArticle: false,
+    power: null
   },
   mutations: {
     changeNewsTopicId (state, id) {
@@ -18,10 +19,18 @@ export default new Vuex.Store({
     },
     showArticle (state, flag) {
       state.isShowArticle = flag
+    },
+    setPower (state, val) {
+      state.power = val
     }
   },
   actions: {
   },
   modules: {
+  },
+  getters: {
+    getPower (state) {
+      return state.power
+    }
   }
 })

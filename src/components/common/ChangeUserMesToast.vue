@@ -27,11 +27,9 @@
           </tr>
           <tr>
             <td>
-              用户性别：<select>
-                <option value="m" selected v-if="sex === 'm'">男性</option>
-                <option value="w" selected v-else>女性</option>
-                <option value="m" v-if="sex === 'w'">男性</option>
-                <option value="w" v-else>女性</option>
+              用户性别：<select v-model="sex">
+                <option :value="2">男性</option>
+                <option :value="1">女性</option>
               </select>
             </td>
           </tr>
@@ -54,7 +52,7 @@ export default {
   data () {
     return {
       loginName: '',
-      sex: 'm',
+      sex: 2,
       pwd: '',
       rpwd: '',
       showPwd: false,
@@ -115,8 +113,12 @@ export default {
   mounted () {
     const name = getCookie('his_user')
     this.loginName = name
-    getSex().then(res => {
-      this.sex = res.data.sex
+    getSex({ name }).then(res => {
+      if (res.data.sex === 3) {
+        this.sex = 1
+      } else {
+        this.sex = res.data.sex
+      }
     })
   }
 }

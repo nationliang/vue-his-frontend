@@ -28,7 +28,7 @@
             <span class="editor">编辑：{{article.editor}}</span>
           </section>
           <section>
-            <p v-for="(paragraph, index) in article.content" :key="index">{{paragraph}}</p>
+            <p>{{article.content}}</p>
           </section>
         </article>
       </div>

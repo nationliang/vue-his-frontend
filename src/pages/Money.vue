@@ -8,7 +8,7 @@
           <el-table-column align="center" label="序号" type="index"></el-table-column>
           <el-table-column align="center" label="姓名" prop="name"></el-table-column>
           <el-table-column align="center" label="科室" prop="dep"></el-table-column>
-          <el-table-column align="center" label="医生" prop="doc"></el-table-column>
+          <el-table-column align="center" label="医生" prop="doctor"></el-table-column>
           <el-table-column align="center" label="日期" prop="date"></el-table-column>
           <el-table-column align="center" label="类型" prop="kind"></el-table-column>
           <el-table-column align="center" label="费用" prop="fee"></el-table-column>
@@ -27,6 +27,12 @@
 import PageHeader from '../components/common/Header'
 import PageSide from '../components/common/PageSide'
 import PageTail from '../components/common/Footer'
+import { MessageBox } from 'element-ui'
+import {
+  finishPayment,
+  getPatientList_mon
+} from '../api/index'
+import { getCookie } from '../config/utils'
 
 export default {
   data () {
@@ -44,87 +50,7 @@ export default {
         {
           name:'admin',
           dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
-          kind: '普通号',
-          date: '2020-07-10',
-          fee: 451
-        },
-        {
-          name:'admin',
-          dep: '牙科',
-          doc: '孙淼',
+          doctor: '孙淼',
           kind: '普通号',
           date: '2020-07-10',
           fee: 451
@@ -138,7 +64,29 @@ export default {
     PageTail
   },
   methods: {
-    pay (row) {}
+    pay (row) {
+      const name = getCookie('his_user')
+      finishPayment({
+        id: row.id,
+        counter: name
+      }).then(res => {
+        if (res.data.status === 1) {
+          MessageBox({
+            title: '消息',
+            message: '操作成功！',
+            type: 'success'
+          })
+          getPatientList_mon().then(res => {
+            this.patientList = res.data
+          })
+        }
+      })
+    }
+  },
+  mounted () {
+    getPatientList_mon().then(res => {
+      this.patientList = res.data
+    })
   }
 }
 </script>

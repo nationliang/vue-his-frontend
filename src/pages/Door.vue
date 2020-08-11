@@ -117,6 +117,7 @@ export default {
       let cookieValue = getCookie("his_user")
       if (cookieValue != null) {
         setCookie("his_user", '', -1)
+        setCookie("his_kind", '', -1)
       }
       this.$router.push("/login")
     },

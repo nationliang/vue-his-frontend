@@ -2,9 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueSocketIO from 'vue-socket.io'
+
 import './assets/styles/reset.css'
 import './assets/styles/iconfont.css'
-import './mock/index.js'
+// import './mock/index.js'
 import './assets/styles/global.css'
 
 import {
@@ -45,6 +47,18 @@ Vue.use(InputNumber)
 Vue.use(Icon)
 Vue.use(Radio),
 Vue.use(Avatar)
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'ws://localhost:4000'
+  // vuex: {
+  //     store,
+  //     actionPrefix: 'SOCKET_',
+  //     mutationPrefix: 'SOCKET_'
+  // },
+  //Optional options
+  // options: { path: "/my-app/" }
+}))
 
 Vue.config.productionTip = false
 

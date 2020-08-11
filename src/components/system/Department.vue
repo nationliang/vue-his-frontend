@@ -6,7 +6,7 @@
         <el-table-column align="center" label="名称" prop="name"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="deleteDep(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteSystemDep(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -28,43 +28,23 @@
 </template>
 <script>
 import { MessageBox } from 'element-ui'
+import { getDep, deleteDep, addDep } from '../../api/index'
+
 export default {
   data () {
     return {
-      depSets: [
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        },
-        {
-          name: '牙科'
-        }
-      ],
+      depSets: [],
       depname: '',
       isShowDepDialog: false
     }
   },
   methods: {
+    showDep () {
+      getDep().then(res => {
+        const data = res.data
+        this.depSets = data
+      })
+    },
     addDepMes () {
       let message = ''
       if (this.depname === '') {
@@ -82,13 +62,46 @@ export default {
         const depMes = {
           name: this.depname
         }
-        console.log(depMes)
+        // console.log(depMes)
+        addDep(depMes).then(res => {
+          const data = res.data
+          if (data.scode === 1) {
+            MessageBox({
+              title: '消息',
+              message: '添加成功！',
+              type: 'success'
+            })
+            this.showDep()
+            this.showDepDialog()
+          } else {
+            MessageBox({
+              title: '消息',
+              message: '待添加的科室名已存在！',
+              type: 'warning'
+            })
+          }
+        })
       }
     },
     showDepDialog () {
       this.isShowDepDialog = !this.isShowDepDialog
     },
-    deleteDep (row) {}
+    deleteSystemDep (row) {
+      deleteDep({ id: row.id, name: row.name }).then(res => {
+        const data = res.data
+        if (data.scode ===  1) {
+          MessageBox({
+            title: '消息',
+            message: '删除成功！',
+            type: 'success'
+          })
+          this.showDep()
+        }
+      })
+    }
+  },
+  mounted () {
+    this.showDep()
   }
 }
 </script>
