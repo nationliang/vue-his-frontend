@@ -27,4 +27,3 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 [后端接口地址](https://github.com/nationliang/vue_his_backend)
 
-[预览地址](http://39.108.94.247/)
